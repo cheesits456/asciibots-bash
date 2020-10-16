@@ -99,13 +99,17 @@ eyes=("o o" "p q" "q p" "d b" "b d" "ooo" "[o]" "9 9" "6=6" "u u" "n n" "q q" "d
 
 mouths=("-" "=" "o" "O" "0" "#" "u" "v" "n" "r" "\`" "^" "A" "@" "e" "E")
 
-for i in {0..15}; do
-	echo -en "${heads1[$i]}"
-	echo -en "${eyes[$i]}"
-	echo -en "${heads2[$i]}"
-	echo -en "${mouths[$i]}"
-	echo -e "${heads3[$i]}"
-	echo -e "${bodies[$i]}"
-	echo -e "${legs[$i]}"
-	echo
-done
+
+head=$(($RANDOM % 16))
+body=$(($RANDOM % 16))
+leg=$(($RANDOM % 16))
+eye=$(($RANDOM % 16))
+mouth=$(($RANDOM % 16))
+
+echo -en "${heads1[$head]}"
+echo -en "${eyes[$eye]}"
+echo -en "${heads2[$head]}"
+echo -en "${mouths[$mouth]}"
+echo -e "${heads3[$head]}"
+echo -e "${bodies[$body]}"
+echo -e "${legs[$leg]}"
