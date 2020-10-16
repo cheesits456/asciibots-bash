@@ -1,6 +1,6 @@
 # asciibots-bash
 
-A bash implementation of https://github.com/walsh9/asciibots
+A zero-dependency bash implementation of https://github.com/walsh9/asciibots
 
 ## Usage
 
