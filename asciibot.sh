@@ -43,9 +43,7 @@ validate_hex() {
 	hex_values=("0" "1" "2" "3" "4" "5" "6" "7" "8" "9" "a" "b" "c" "d" "e" "f")
 	match="0"
 	for i in ${hex_values[@]}; do
-		if [ "$i" == "$@" ]; then
-			match="1"
-		fi
+		[ "$i" == "$@" ] && match="1"
 	done
 }
 
@@ -150,13 +148,11 @@ eyes2=("o o" "b d" "0-0" "[o]" "ooo" "6=6" "- -" "o o" "d d" "o o" "q q" "u u" "
 mouths=("-" "=" "o" "O" "0" "#" "u" "v" "n" "r" "\`" "^" "A" "@" "e" "E")
 mouths2=("-" "=" "-" "-" "#" "o" "0" "o" "u" "=" "-" "-" "-" "=" "-" "\"")
 
-if [ "$length" == "5" ]; then
+[ "$length" == "5" ] && {
 	values=("${1:0:1}" "${1:1:1}" "${1:2:1}" "${1:3:1}" "${1:4:1}")
 	for i in ${values[@]}; do
 		validate_hex "$i"
-		if [ "$match" == "0" ]; then
-			print_robot
-		fi
+		[ "$match" == "0" ] && print_robot
 	done
 	for i in {0..4}; do
 		hex_to_int ${values[$i]}
@@ -168,16 +164,16 @@ if [ "$length" == "5" ]; then
 			4) leg="$int";   shift;;
 		esac
 	done
-fi
+}
 
-if [ "$length" == "3" ]; then
+[ "$length" == "3" ] && {
 	values=("${1:0:1}" "${1:1:1}" "${1:2:1}")
 	for i in ${values[@]}; do
 		validate_hex "$i"
-		if [ "$match" == "0" ]; then
+		[ "$match" == "0" ] && {
 			length="0"
 			print_robot
-		fi
+		}
 	done
 	for i in {0..2}; do
 		hex_to_int ${values[$i]}
@@ -189,6 +185,6 @@ if [ "$length" == "3" ]; then
 			2) leg="$int";  shift;;
 		esac
 	done
-fi
+}
 
 print_robot
