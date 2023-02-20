@@ -11,28 +11,28 @@ hex_to_int() {
 		d) int="13"; shift;;
 		e) int="14"; shift;;
 		f) int="15"; shift;;
-		*) int="$@"; shift;;
+		*) int="$*"; shift;;
 	esac
 }
 
 print_robot() {
-	[ -z "$head" ] && head=$(($RANDOM % 16))
-	[ -z "$body" ] && body=$(($RANDOM % 16))
-	[ -z "$leg" ] && leg=$(($RANDOM % 16))
-	[ -z "$eye" ] && eye=$(($RANDOM % 16))
-	[ -z "$mouth" ] && mouth=$(($RANDOM % 16))
+	[ -z "$head" ] && head=$((RANDOM % 16))
+	[ -z "$body" ] && body=$((RANDOM % 16))
+	[ -z "$leg" ] && leg=$((RANDOM % 16))
+	[ -z "$eye" ] && eye=$((RANDOM % 16))
+	[ -z "$mouth" ] && mouth=$((RANDOM % 16))
 	echo -en "${heads1[$head]}"
-	[ "$length" == "3" ] && {
+	if [ "$length" == "3" ]; then
 		echo -en "${eyes2[$eye]}"
-	} || {
+	else
 		echo -en "${eyes[$eye]}"
-	}
+	fi
 	echo -en "${heads2[$head]}"
-	[ "$length" == "3" ] && {
+	if [ "$length" == "3" ]; then
 		echo -en "${mouths2[$mouth]}"
-	} || {
+	else
 		echo -en "${mouths[$mouth]}"
-	}
+	fi
 	echo -e "${heads3[$head]}"
 	echo -e "${bodies[$body]}"
 	echo -e "${legs[$leg]}"
@@ -42,8 +42,8 @@ print_robot() {
 validate_hex() {
 	hex_values=("0" "1" "2" "3" "4" "5" "6" "7" "8" "9" "a" "b" "c" "d" "e" "f")
 	match="0"
-	for i in ${hex_values[@]}; do
-		[ "$i" == "$@" ] && match="1"
+	for i in "${hex_values[@]}"; do
+		[ "$i" == "$*" ] && match="1"
 	done
 }
 
@@ -150,12 +150,12 @@ mouths2=("-" "=" "-" "-" "#" "o" "0" "o" "u" "=" "-" "-" "-" "=" "-" "\"")
 
 [ "$length" == "5" ] && {
 	values=("${1:0:1}" "${1:1:1}" "${1:2:1}" "${1:3:1}" "${1:4:1}")
-	for i in ${values[@]}; do
+	for i in "${values[@]}"; do
 		validate_hex "$i"
 		[ "$match" == "0" ] && print_robot
 	done
 	for i in {0..4}; do
-		hex_to_int ${values[$i]}
+		hex_to_int "${values[$i]}"
 		case $i in
 			0) mouth="$int"; shift;;
 			1) eye="$int";   shift;;
@@ -168,7 +168,7 @@ mouths2=("-" "=" "-" "-" "#" "o" "0" "o" "u" "=" "-" "-" "-" "=" "-" "\"")
 
 [ "$length" == "3" ] && {
 	values=("${1:0:1}" "${1:1:1}" "${1:2:1}")
-	for i in ${values[@]}; do
+	for i in "${values[@]}"; do
 		validate_hex "$i"
 		[ "$match" == "0" ] && {
 			length="0"
@@ -176,7 +176,7 @@ mouths2=("-" "=" "-" "-" "#" "o" "0" "o" "u" "=" "-" "-" "-" "=" "-" "\"")
 		}
 	done
 	for i in {0..2}; do
-		hex_to_int ${values[$i]}
+		hex_to_int "${values[$i]}"
 		case $i in
 			0) eye="$int"
 			   mouth="$int"
