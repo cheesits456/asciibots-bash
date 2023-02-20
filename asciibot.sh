@@ -1,5 +1,54 @@
 #!/usr/bin/env bash
 
+length=${#1}
+
+hex_to_int() {
+	int=""
+	case $@ in
+		a) int="10"; shift;;
+		b) int="11"; shift;;
+		c) int="12"; shift;;
+		d) int="13"; shift;;
+		e) int="14"; shift;;
+		f) int="15"; shift;;
+		*) int="$@"; shift;;
+	esac
+}
+
+print_robot() {
+	[ -z "$head" ] && head=$(($RANDOM % 16))
+	[ -z "$body" ] && body=$(($RANDOM % 16))
+	[ -z "$leg" ] && leg=$(($RANDOM % 16))
+	[ -z "$eye" ] && eye=$(($RANDOM % 16))
+	[ -z "$mouth" ] && mouth=$(($RANDOM % 16))
+	echo -en "${heads1[$head]}"
+	[ "$length" == "3" ] && {
+		echo -en "${eyes2[$eye]}"
+	} || {
+		echo -en "${eyes[$eye]}"
+	}
+	echo -en "${heads2[$head]}"
+	[ "$length" == "3" ] && {
+		echo -en "${mouths2[$mouth]}"
+	} || {
+		echo -en "${mouths[$mouth]}"
+	}
+	echo -e "${heads3[$head]}"
+	echo -e "${bodies[$body]}"
+	echo -e "${legs[$leg]}"
+	exit 0
+}
+
+validate_hex() {
+	hex_values=("0" "1" "2" "3" "4" "5" "6" "7" "8" "9" "a" "b" "c" "d" "e" "f")
+	match="0"
+	for i in ${hex_values[@]}; do
+		if [ "$i" == "$@" ]; then
+			match="1"
+		fi
+	done
+}
+
 heads1=(
 	"     ___T_     \n    | "
 	"    \\.===./    \n    | "
@@ -96,20 +145,50 @@ legs=(
 )
 
 eyes=("o o" "p q" "q p" "d b" "b d" "ooo" "[o]" "9 9" "6=6" "u u" "n n" "q q" "d d" "- -" "0 0" "O O")
+eyes2=("o o" "b d" "0-0" "[o]" "ooo" "6=6" "- -" "o o" "d d" "o o" "q q" "u u" "9 9" "n n" "p q" "q p")
 
 mouths=("-" "=" "o" "O" "0" "#" "u" "v" "n" "r" "\`" "^" "A" "@" "e" "E")
+mouths2=("-" "=" "-" "-" "#" "o" "0" "o" "u" "=" "-" "-" "-" "=" "-" "\"")
 
+if [ "$length" == "5" ]; then
+	values=("${1:0:1}" "${1:1:1}" "${1:2:1}" "${1:3:1}" "${1:4:1}")
+	for i in ${values[@]}; do
+		validate_hex "$i"
+		if [ "$match" == "0" ]; then
+			print_robot
+		fi
+	done
+	for i in {0..4}; do
+		hex_to_int ${values[$i]}
+		case $i in
+			0) mouth="$int"; shift;;
+			1) eye="$int";   shift;;
+			2) head="$int";  shift;;
+			3) body="$int";  shift;;
+			4) leg="$int";   shift;;
+		esac
+	done
+fi
 
-head=$(($RANDOM % 16))
-body=$(($RANDOM % 16))
-leg=$(($RANDOM % 16))
-eye=$(($RANDOM % 16))
-mouth=$(($RANDOM % 16))
+if [ "$length" == "3" ]; then
+	values=("${1:0:1}" "${1:1:1}" "${1:2:1}")
+	for i in ${values[@]}; do
+		validate_hex "$i"
+		if [ "$match" == "0" ]; then
+			length="0"
+			print_robot
+		fi
+	done
+	for i in {0..2}; do
+		hex_to_int ${values[$i]}
+		case $i in
+			0) eye="$int"
+			   mouth="$int"
+			   head="$int"; shift;;
+			1) body="$int"; shift;;
+			2) leg="$int";  shift;;
+		esac
+	done
+fi
 
-echo -en "${heads1[$head]}"
-echo -en "${eyes[$eye]}"
-echo -en "${heads2[$head]}"
-echo -en "${mouths[$mouth]}"
-echo -e "${heads3[$head]}"
-echo -e "${bodies[$body]}"
-echo -e "${legs[$leg]}"
+print_robot
